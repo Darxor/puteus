@@ -1,13 +1,20 @@
 [project]
 name = "puteus"
-version = "0.1.0"
+version = "0.2.0"
 description = "Drain the whole internet one drop at a time."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "aiosqlite>=0.21.0",
     "alembic>=1.14.1",
     "fastapi>=0.115.8",
+    "greenlet>=3.1.1",
+    "pycountry>=24.6.1",
     "pydantic>=2.10.6",
+    "pydantic-extra-types>=2.10.2",
+    "pydantic-settings>=2.7.1",
+    "pyyaml>=6.0.2",
+    "sqladmin>=0.20.1",
     "sqlmodel>=0.0.22",
     "uvicorn>=0.34.0",
 ]
@@ -33,7 +40,7 @@ order-by-type = true
 relative-imports-order = "closest-to-furthest"
 extra-standard-library = ["typing"]
 section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
-known-first-party = ["app", "models", "db"]
+known-first-party = ["app"]
 
 [tool.ruff.lint.flake8-bugbear]
 # Allow default arguments like, e.g., `data: List[str] = fastapi.Query(None)`.
@@ -44,5 +51,6 @@ extend-immutable-calls = ["fastapi.Depends", "fastapi.Query", "fastapi.Path"]
 "**/{tests,docs}/*" = ["E402"]
 
 [tool.pyright]
+include = ["app/"]
 venv = ".venv"
 venvPath = "."

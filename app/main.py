@@ -1,39 +1,27 @@
-from collections.abc import Generator
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from typing import Any
 
-from fastapi import Depends, FastAPI, Query
-from sqlmodel import Session, SQLModel, select
+from fastapi import FastAPI
 
-from db import get_engine
-from models.sources import Site
-
-engine = get_engine()
+from . import api
+from .admin import register_admin
+from .config import config
+from .db import init_db
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
-    SQLModel.metadata.create_all(engine)
-    try:
-        yield
-    finally:
-        engine.dispose()
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, Any]:
+    await init_db()
+    yield
 
 
-def get_session() -> Generator[Session, Any, None]:
-    with Session(engine) as session:
-        yield session
-
-
-app = FastAPI(lifespan=lifespan)
-
-
-@app.get("/sites/", response_model=list[Site])
-async def read_sites(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    limit: int = Query(default=100, le=100),
-):
-    sites = session.exec(select(Site).offset(offset).limit(limit))
-    return sites
+app = FastAPI(
+    lifespan=lifespan,
+    debug=config.debug,
+    title=config.app_name,
+    description=config.app_description,
+    version=config.app_version,
+)
+app.include_router(api.router)
+register_admin(app)
