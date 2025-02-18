@@ -1,4 +1,4 @@
-# Puteus
+# Puteus <img align="right" width="128" height="128" src="assets/puteus.png">
 
 ## Overview
 Puteus is a FastAPI and SQLModel based application designed to provide robust RESTful endpoints and seamless integration with various databases. It leverages modern Python features and SQLAlchemy event listeners for advanced model behaviors, ensuring maintainability and scalability for production systems.
