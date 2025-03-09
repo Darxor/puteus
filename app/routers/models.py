@@ -8,10 +8,10 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from pydantic import BaseModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from .db import get_async_session
-from .models import articles, sources
-from .models.base import SQLCreate, SQLPublic, SQLTable
-from .models.model_service import ModelContainer, ModelService
+from ..db import get_async_session
+from ..models import articles, sources
+from ..models.base import SQLCreate, SQLPublic, SQLTable
+from ..models.model_service import ModelContainer, ModelService
 
 ModelServiceFactory = Callable[[AsyncSession], Coroutine[Any, Any, ModelService]]
 
@@ -166,7 +166,7 @@ def add_delete_model_endpoint(
         return await service.delete(uuid=uuid)
 
 
-router = APIRouter(prefix="/api/v1")
+router = APIRouter()
 
 model_endpoint_configs: list[ModelEndpointConfig] = [
     ModelEndpointConfig.from_table(table=sources.Site),
