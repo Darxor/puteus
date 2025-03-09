@@ -1,16 +1,13 @@
 import enum
 import uuid
-from typing import TYPE_CHECKING
 
 from pydantic_extra_types import country as pydantic_country
 from pydantic_extra_types import language_code as pydantic_lang
 from sqlmodel import AutoString, Field, Relationship
 
+from .articles import WatchLog
 from .base import SQLCreate, SQLPublic, SQLTable
 from .urls import AnyUrl
-
-if TYPE_CHECKING:
-    from .articles import WatchLog
 
 
 class SiteCreate(SQLCreate):

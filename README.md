@@ -31,20 +31,25 @@ Create a `.env` file in the project root with the following variables:
 A sample `.env.example` file is provided for reference.
 
 ## Usage
+To bootstrap the database with initial data, run:
+```bash
+uv run python -m scripts.bootstrap_db
+```
+
 To run the application with hot reload on localhost, execute:
 ```bash
 uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --log-config=log_config.yml --reload
 ```
 
 The application will be accessible at `http://localhost:8000`.
-OpenAPI documentation is available at `http://localhost:8000/docs` and admin interface at `http://localhost:8000/admin`.
+OpenAPI documentation is available at `http://localhost:8000/docs` (or `http://localhost:8000/redoc`) and admin interface at `http://localhost:8000/admin`.
 
 For production deployment, adjust the log levels and disable hot reloading.
 
 ## Development
 - **Code Style**: Follow PEP 8. Use numpydoc style for Python docstrings.
 - **Mixins**: Explore the mixin classes located in `app/models/mixins.py` for advanced model functionality.
-- **Testing**: Add tests to ensure new features work as expected. Consider writing integration tests for API endpoints.
+- **Testing**: In progress.
 
 To run linting use:
 ```bash
