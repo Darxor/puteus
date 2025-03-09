@@ -16,6 +16,7 @@ class SiteAdmin(BaseView, model=Site):
     column_searchable_list = ["name", "url", "description"]
     column_filters = ["active"]
 
+
 class SourceAdmin(BaseView, model=Source):
     icon = "fa-solid fa-plug"
     column_list = ["id", "site", "type", "uri", "active"]

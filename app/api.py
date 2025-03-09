@@ -50,6 +50,7 @@ class ModelEndpointConfig(BaseModel):
     from_table(table, tags=None)
         Class method that creates an endpoint configuration from a SQLAlchemy table class.
     """
+
     path: str
     table: type[SQLTable]
     create: type[SQLCreate]
@@ -128,7 +129,9 @@ def add_read_model_endpoint(
         tags=config_.tags,
         **(decorator_extra_kwargs or {}),
     )
-    async def read(uuid: Annotated[UUID, Depends(config_.service)], service: ModelService = Depends(config_.service)) -> SQLTable:
+    async def read(
+        uuid: Annotated[UUID, Depends(config_.service)], service: ModelService = Depends(config_.service)
+    ) -> SQLTable:
         entity = await service.read(uuid=uuid)
         if entity is None:
             raise HTTPException(status_code=404, detail="Model not found")
@@ -145,9 +148,7 @@ def add_update_model_endpoint(
         tags=config_.tags,
         **(decorator_extra_kwargs or {}),
     )
-    async def update(
-        data: SQLPublic, service: ModelService = Depends(config_.service)
-    ):
+    async def update(data: SQLPublic, service: ModelService = Depends(config_.service)):
         return await service.update(data=data)
 
 
