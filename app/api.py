@@ -9,9 +9,9 @@ from pydantic import BaseModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from .db import get_async_session
+from .models import articles, sources
 from .models.base import SQLCreate, SQLPublic, SQLTable
 from .models.model_service import ModelContainer, ModelService
-from .models.sources import Site, Source
 
 ModelServiceFactory = Callable[[AsyncSession], Coroutine[Any, Any, ModelService]]
 
@@ -169,8 +169,10 @@ def add_delete_model_endpoint(
 router = APIRouter(prefix="/api/v1")
 
 model_endpoint_configs: list[ModelEndpointConfig] = [
-    ModelEndpointConfig.from_table(table=Site),
-    ModelEndpointConfig.from_table(table=Source),
+    ModelEndpointConfig.from_table(table=sources.Site),
+    ModelEndpointConfig.from_table(table=sources.Source),
+    ModelEndpointConfig.from_table(table=articles.WatchLog),
+    ModelEndpointConfig.from_table(table=articles.Article),
 ]
 
 

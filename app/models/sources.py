@@ -1,5 +1,6 @@
 import enum
 import uuid
+from typing import TYPE_CHECKING
 
 from pydantic_extra_types import country as pydantic_country
 from pydantic_extra_types import language_code as pydantic_lang
@@ -7,6 +8,9 @@ from sqlmodel import AutoString, Field, Relationship
 
 from .base import SQLCreate, SQLPublic, SQLTable
 from .urls import AnyUrl
+
+if TYPE_CHECKING:
+    from .articles import WatchLog
 
 
 class SiteCreate(SQLCreate):
@@ -31,6 +35,14 @@ class Site(SitePublic, SQLTable, table=True):
 
 class SourceType(enum.StrEnum):
     RSS = enum.auto()
+    WEBPAGE = enum.auto()
+    TELEGRAM = enum.auto()
+
+
+class WatchableSelectorType(enum.StrEnum):
+    CSS = enum.auto()
+    XPATH = enum.auto()
+    REGEX = enum.auto()
 
 
 class SourceCreate(SQLCreate):
@@ -44,6 +56,10 @@ class SourceCreate(SQLCreate):
         schema_extra={"examples": ["en", "ru", "de"]},
     )
     uri: AnyUrl = Field(..., description="The URI of the source", sa_type=AutoString)
+    watchable_selector: str | None = Field(..., description="The selector to watch for new content", nullable=True)
+    watchable_selector_type: WatchableSelectorType | None = Field(
+        ..., description="The type of the selector to watch for new content", nullable=True
+    )
 
 
 class SourcePublic(SourceCreate, SQLPublic): ...
@@ -51,3 +67,4 @@ class SourcePublic(SourceCreate, SQLPublic): ...
 
 class Source(SourcePublic, SQLTable, table=True):
     site: Site | None = Relationship(back_populates="sources")
+    watchlogs: list["WatchLog"] = Relationship(back_populates="source")
