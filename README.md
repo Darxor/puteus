@@ -18,7 +18,7 @@ Puteus is a FastAPI and SQLModel based application designed to provide robust RE
    cd puteus
    ```
 
-2. Install dependencies using the uv package manager:
+2. Install dependencies using the [uv package manager](https://docs.astral.sh/uv/):
    ```bash
    uv sync
    ```
