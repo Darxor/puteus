@@ -56,6 +56,6 @@ extend-immutable-calls = ["fastapi.Depends", "fastapi.Query", "fastapi.Path"]
 "**/{tests,docs}/*" = ["E402"]
 
 [tool.pyright]
-include = ["app/"]
+include = ["app/", "scripts/"]
 venv = ".venv"
 venvPath = "."
