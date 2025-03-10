@@ -128,8 +128,8 @@ async def create_site(session: AsyncSession, site_data: dict[str, Any]) -> Site:
     """
     # Check if site already exists
     stmt = select(Site).where(Site.url == site_data["url"], Site.active)
-    result = await session.execute(stmt)
-    existing_site = result.scalars().first()
+    result = await session.exec(stmt)
+    existing_site = result.first()
 
     if existing_site:
         logger.info(f"Site {site_data['name']} already exists, skipping creation")
@@ -150,7 +150,7 @@ async def create_site(session: AsyncSession, site_data: dict[str, Any]) -> Site:
     return site
 
 
-async def create_source(session: AsyncSession, source_data: dict[str, Any], site_map: dict[str, Site]) -> Source:
+async def create_source(session: AsyncSession, source_data: dict[str, Any], site_map: dict[str, Site]) -> Source | None:
     """
     Create a Source in the database.
 
@@ -166,7 +166,7 @@ async def create_source(session: AsyncSession, source_data: dict[str, Any], site
     Returns
     -------
     Source
-        The created source instance
+        The created source instance or None if the site is not found
     """
     site = site_map.get(source_data["site_name"])
     if not site:
@@ -175,9 +175,9 @@ async def create_source(session: AsyncSession, source_data: dict[str, Any], site
 
     # Check if source already exists
     stmt = select(Source).where(Source.uri == source_data["uri"], Source.active)
-    result = await session.execute(stmt)
+    result = await session.exec(stmt)
 
-    if existing_source := result.scalars().first():
+    if existing_source := result.first():
         logger.info(f"Source {source_data['uri']} already exists, skipping creation")
         return existing_source
 

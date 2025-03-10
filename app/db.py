@@ -9,7 +9,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from .config import config
 
 async_engine = create_async_engine(config.db_uri, future=True)
-async_sessionmaker = async_sessionmaker(async_engine, expire_on_commit=False)
+async_sessionmaker = async_sessionmaker(async_engine, expire_on_commit=False, class_=AsyncSession)
 
 logger = logging.getLogger(__name__)
 
