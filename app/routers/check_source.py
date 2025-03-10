@@ -20,6 +20,7 @@ router = APIRouter(
 
 class ArticleOrError(BaseModel):
     """Response model for check source endpoint."""
+
     source_uuid: UUID
     article: Article | None = None
     error: str | None = None
@@ -66,7 +67,9 @@ async def check_multiple_sources(
             if article:
                 response.append(ArticleOrError(source_uuid=source_uuid, article=article, error=None))
             else:
-                response.append(ArticleOrError(source_uuid=source_uuid, article=None, message="No content changes detected"))
+                response.append(
+                    ArticleOrError(source_uuid=source_uuid, article=None, message="No content changes detected")
+                )
         except Exception as e:
             logger.exception(f"Error checking source {source_uuid}: {str(e)}")
             response.append(ArticleOrError(source_uuid=source_uuid, article=None, error=str(e)))
