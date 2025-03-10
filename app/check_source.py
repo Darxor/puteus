@@ -99,7 +99,7 @@ class CheckSourceService:
                 self.logger.info(f"Successfully fetched {len(content)} bytes from {url}")
                 return content
         except httpx.HTTPError as e:
-            self.logger.exception(f"Error fetching content from {url}: {str(e)}")
+            self.logger.error(f"Error fetching content from {url}: {str(e)}")
             raise HTTPException(
                 status_code=500, detail=f"Error fetching source content after multiple attempts: {str(e)}"
             ) from e
@@ -286,6 +286,53 @@ class CheckSourceService:
         self.logger.info(f"Created watchlog {watchlog.uuid}")
         return watchlog
 
+    async def get_source(self, source_uuid: UUID) -> Source:
+        """Get a source by its UUID.
+
+        Parameters
+        ----------
+        source_uuid : UUID
+            The UUID of the source
+
+        Returns
+        -------
+        Optional[Source]
+            The source object, or None if not found
+        """
+        self.logger.debug(f"Fetching source {source_uuid}")
+        stmt = select(Source).where(Source.uuid == source_uuid)
+        result = await self.session.exec(stmt)
+        source = result.one_or_none()
+
+        if source is None:
+            self.logger.error(f"Source {source_uuid} not found or not active")
+            raise HTTPException(status_code=404, detail="Source not found")
+        else:
+            await self.session.refresh(source)
+            self.logger.debug(f"Found source {source.uuid}: {source.uri}")
+
+        return source
+
+    async def get_all_sources(self) -> list[Source]:
+        """Get all active sources.
+
+        Returns
+        -------
+        list[Source]
+            List of all active sources
+        """
+        self.logger.debug("Fetching all active sources")
+        stmt = select(Source).where(Source.active)
+        result = await self.session.exec(stmt)
+        sources = result.all()
+
+        if sources:
+            self.logger.info(f"Found {len(sources)} active sources")
+        else:
+            self.logger.info("No active sources found")
+
+        return list(sources)
+
     async def check_source(self, source_uuid: UUID) -> Article | None:
         """Check a source for new content and create an article if content has changed.
 
@@ -305,16 +352,7 @@ class CheckSourceService:
             If source not found or errors occur during processing
         """
         self.logger.info(f"Checking source {source_uuid} for changes")
-
-        stmt = select(Source).where(Source.uuid == source_uuid, Source.active)
-        result = await self.session.exec(stmt)
-        source = result.one_or_none()
-
-        if source is None:
-            self.logger.error(f"Source {source_uuid} not found or not active")
-            raise HTTPException(status_code=404, detail="Source not found")
-
-        await self.session.refresh(source)
+        source = await self.get_source(source_uuid)
 
         source_uri = source.uri
         selector = source.watchable_selector or ""
