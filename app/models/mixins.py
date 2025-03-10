@@ -7,13 +7,7 @@ from sqlmodel import Field
 
 
 class UUIDMixin:
-    uuid: UUID = Field(
-        default_factory=uuid.uuid4,
-        primary_key=True,
-        allow_mutation=False,
-        unique=True,
-        index=True
-    )
+    uuid: UUID = Field(default_factory=uuid.uuid4, primary_key=True, allow_mutation=False, unique=True, index=True)
 
 
 class TimeAuditMixin:

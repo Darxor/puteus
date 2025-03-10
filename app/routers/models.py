@@ -8,10 +8,10 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from pydantic import BaseModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from .db import get_async_session
-from .models.base import SQLCreate, SQLPublic, SQLTable
-from .models.model_service import ModelContainer, ModelService
-from .models.sources import Site, Source
+from ..db import get_async_session
+from ..models import articles, sources
+from ..models.base import SQLCreate, SQLPublic, SQLTable
+from ..models.model_service import ModelContainer, ModelService
 
 ModelServiceFactory = Callable[[AsyncSession], Coroutine[Any, Any, ModelService]]
 
@@ -50,6 +50,7 @@ class ModelEndpointConfig(BaseModel):
     from_table(table, tags=None)
         Class method that creates an endpoint configuration from a SQLAlchemy table class.
     """
+
     path: str
     table: type[SQLTable]
     create: type[SQLCreate]
@@ -128,7 +129,9 @@ def add_read_model_endpoint(
         tags=config_.tags,
         **(decorator_extra_kwargs or {}),
     )
-    async def read(uuid: Annotated[UUID, Depends(config_.service)], service: ModelService = Depends(config_.service)) -> SQLTable:
+    async def read(
+        uuid: Annotated[UUID, Depends(config_.service)], service: ModelService = Depends(config_.service)
+    ) -> SQLTable:
         entity = await service.read(uuid=uuid)
         if entity is None:
             raise HTTPException(status_code=404, detail="Model not found")
@@ -145,9 +148,7 @@ def add_update_model_endpoint(
         tags=config_.tags,
         **(decorator_extra_kwargs or {}),
     )
-    async def update(
-        data: SQLPublic, service: ModelService = Depends(config_.service)
-    ):
+    async def update(data: SQLPublic, service: ModelService = Depends(config_.service)):
         return await service.update(data=data)
 
 
@@ -165,11 +166,13 @@ def add_delete_model_endpoint(
         return await service.delete(uuid=uuid)
 
 
-router = APIRouter(prefix="/api/v1")
+router = APIRouter()
 
 model_endpoint_configs: list[ModelEndpointConfig] = [
-    ModelEndpointConfig.from_table(table=Site),
-    ModelEndpointConfig.from_table(table=Source),
+    ModelEndpointConfig.from_table(table=sources.Site),
+    ModelEndpointConfig.from_table(table=sources.Source),
+    ModelEndpointConfig.from_table(table=articles.WatchLog),
+    ModelEndpointConfig.from_table(table=articles.Article),
 ]
 
 

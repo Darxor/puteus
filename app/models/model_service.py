@@ -36,6 +36,7 @@ class ModelContainer(BaseModel):
         Returns:
             ModelContainer: A new instance containing the table and its related classes
     """
+
     table: type[SQLTable]
     public: type[SQLPublic]
     create: type[SQLCreate]
@@ -67,6 +68,7 @@ class ModelService:
     session (AsyncSession): SQLAlchemy async session for database operations
     models (ModelContainer): Container for the table models and schemas
     """
+
     def __init__(self, table: type[SQLTable], session: AsyncSession):
         self.table = table
         self.session = session

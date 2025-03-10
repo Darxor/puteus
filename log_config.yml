@@ -32,3 +32,8 @@ loggers:
     handlers:
       - access
     propagate: no
+  app:
+    level: INFO
+    handlers:
+      - default
+    propagate: yes

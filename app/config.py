@@ -1,4 +1,6 @@
-from pydantic import ValidationInfo, field_validator
+from typing import Annotated
+
+from pydantic import Field, ValidationInfo, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from .models.urls import AnyUrl
@@ -14,6 +16,10 @@ class Config(BaseSettings):
     app_name: str = "Puteus"
     app_description: str = "Drain the web one drop at a time."
     app_version: str = "0.2.0"
+
+    check_source_interval: Annotated[
+        int, Field(description="Interval in seconds to check sources for new content.", gt=0)
+    ] = 60 * 5  # 5 minutes
 
     @field_validator("dev_drop_db", mode="after")
     @classmethod
