@@ -62,6 +62,36 @@ SAMPLE_SITES: list[dict[str, Any]] = [
         "description": "Al Jazeera is a Qatari international news channel.",
         "country": "QAT",
     },
+    {
+        "name": "RIA Novosti",
+        "url": "https://ria.ru",
+        "description": "RIA Novosti is a Russian state-owned news agency.",
+        "country": "RUS",
+    },
+    {
+        "name": "TASS",
+        "url": "https://tass.ru",
+        "description": "TASS is a major Russian news agency founded in 1904.",
+        "country": "RUS",
+    },
+    {
+        "name": "Kommersant",
+        "url": "https://www.kommersant.ru",
+        "description": "Kommersant is a nationally distributed daily newspaper published in Russia.",
+        "country": "RUS",
+    },
+    {
+        "name": "RT",
+        "url": "https://russian.rt.com",
+        "description": "RT is a Russian international television network.",
+        "country": "RUS",
+    },
+    {
+        "name": "Interfax",
+        "url": "https://www.interfax.ru",
+        "description": "Interfax is a major Russian news agency.",
+        "country": "RUS",
+    },
 ]
 
 SAMPLE_SOURCE_TEMPLATES: list[dict[str, Any]] = [
@@ -105,6 +135,46 @@ SAMPLE_SOURCE_TEMPLATES: list[dict[str, Any]] = [
         "uri": "https://www.aljazeera.com/news/",
         "locale": "en",
         "watchable_selector": "#featured-news-container",
+        "watchable_selector_type": WatchableSelectorType.CSS,
+    },
+    {
+        "site_name": "RIA Novosti",
+        "type": SourceType.WEBPAGE,
+        "uri": "https://ria.ru/world/",
+        "locale": "ru",
+        "watchable_selector": ".rubric-list .list-item",
+        "watchable_selector_type": WatchableSelectorType.CSS,
+    },
+    {
+        "site_name": "TASS",
+        "type": SourceType.WEBPAGE,
+        "uri": "https://tass.ru/mezhdunarodnaya-panorama",
+        "locale": "ru",
+        "watchable_selector": "#infinite_listing a",
+        "watchable_selector_type": WatchableSelectorType.CSS,
+    },
+    {
+        "site_name": "Kommersant",
+        "type": SourceType.WEBPAGE,
+        "uri": "https://www.kommersant.ru/rubric/5",
+        "locale": "ru",
+        "watchable_selector": ".rubric_lenta > article",
+        "watchable_selector_type": WatchableSelectorType.CSS,
+    },
+    {
+        "site_name": "RT",
+        "type": SourceType.WEBPAGE,
+        "uri": "https://russian.rt.com/world",
+        "locale": "ru",
+        "watchable_selector": ".listing__column_sections",
+        "watchable_selector_type": WatchableSelectorType.CSS,
+    },
+    {
+        "site_name": "Interfax",
+        "type": SourceType.WEBPAGE,
+        "uri": "https://www.interfax.ru/world/",
+        "locale": "ru",
+        "watchable_selector": ".timeline",
         "watchable_selector_type": WatchableSelectorType.CSS,
     },
 ]
