@@ -11,11 +11,7 @@ from ..models.articles import Article
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(
-    prefix="/check-source",
-    tags=["check-source"],
-    responses={404: {"description": "Source not found"}},
-)
+router = APIRouter(prefix="/check-source", tags=["check-source"])
 
 
 class ArticleOrError(BaseModel):
@@ -86,6 +82,23 @@ async def check_multiple_sources(
 
     logger.info(f"Batch check completed. Created {len(articles)} articles, encountered {len(errors)} errors")
     return response
+
+
+@router.post(
+    "/batch/all",
+    response_model=list[ArticleOrError],
+    status_code=status.HTTP_200_OK,
+)
+async def check_all_sources(
+    service: CheckSourceService = Depends(get_check_source_service),
+) -> list[ArticleOrError]:
+    """
+    Check all sources for new content and create articles for changed content.
+    """
+    logger.info("API request to check all sources")
+    source_uuids = [source.uuid for source in await service.get_all_sources()]
+
+    return await check_multiple_sources(source_uuids=source_uuids, service=service)
 
 
 @router.post(
